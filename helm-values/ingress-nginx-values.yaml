@@ -1,0 +1,46 @@
+# ingress-nginx chart values
+# helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx -f helm-values/ingress-nginx-values.yaml
+
+controller:
+  replicaCount: 2
+
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 256Mi
+      cpu: 500m
+
+  service:
+    type: LoadBalancer
+    externalTrafficPolicy: Local
+
+  config:
+    use-forwarded-headers: "true"
+    proxy-body-size: "10m"
+    proxy-read-timeout: "60"
+    proxy-send-timeout: "60"
+    proxy-connect-timeout: "10"
+
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: ingress-nginx
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+
+  labels:
+    app.kubernetes.io/part-of: kubiquest
+    environment: production

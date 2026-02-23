@@ -1,0 +1,54 @@
+# Bitnami RabbitMQ chart values
+# helm install rabbitmq bitnami/rabbitmq -n databases -f helm-values/rabbitmq-values.yaml
+
+auth:
+  existingPasswordSecret: rabbitmq-secret
+  existingSecretPasswordKey: rabbitmq-password
+  existingErlangSecret: rabbitmq-secret
+  existingSecretErlangKey: rabbitmq-erlang-cookie
+  username: kubiuser
+
+replicaCount: 3
+
+clustering:
+  enabled: true
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 250m
+  limits:
+    memory: 512Mi
+    cpu: 500m
+
+extraConfiguration: |-
+  default_vhost = /
+  default_exchange_type = direct
+
+plugins: "rabbitmq_management rabbitmq_peer_discovery_k8s"
+
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  timeoutSeconds: 20
+  failureThreshold: 6
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+commonLabels:
+  app.kubernetes.io/part-of: kubiquest
+  environment: production

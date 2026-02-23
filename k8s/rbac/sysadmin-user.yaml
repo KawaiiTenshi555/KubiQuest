@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sysadmin-user
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/part-of: kubiquest
+    app.kubernetes.io/managed-by: kubectl
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sysadmin-user-token
+  namespace: kube-system
+  annotations:
+    kubernetes.io/service-account.name: sysadmin-user
+  labels:
+    app.kubernetes.io/part-of: kubiquest
+type: kubernetes.io/service-account-token

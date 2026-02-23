@@ -1,0 +1,54 @@
+# Grafana Loki Stack chart values
+# helm install loki-stack grafana/loki-stack -n logging -f helm-values/loki-stack-values.yaml
+
+loki:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 10Gi
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 300m
+  config:
+    ingester:
+      chunk_idle_period: 3m
+      chunk_block_size: 262144
+      chunk_retain_period: 1m
+      max_transfer_retries: 0
+    limits_config:
+      retention_period: 168h  # 7 days
+    storage_config:
+      boltdb_shipper:
+        active_index_directory: /data/loki/index
+        cache_location: /data/loki/index_cache
+        cache_ttl: 24h
+        shared_store: filesystem
+      filesystem:
+        directory: /data/loki/chunks
+
+promtail:
+  enabled: true
+  resources:
+    requests:
+      memory: 64Mi
+      cpu: 50m
+    limits:
+      memory: 128Mi
+      cpu: 100m
+  config:
+    snippets:
+      pipelineStages:
+        - docker: {}
+
+grafana:
+  enabled: false  # Already deployed via kube-prometheus-stack
+
+fluent-bit:
+  enabled: false
+
+prometheus:
+  enabled: false  # Already deployed via kube-prometheus-stack

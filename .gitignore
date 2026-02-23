@@ -1,0 +1,48 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.a
+
+# Build outputs
+dist/
+build/
+bin/
+
+# Dependencies
+node_modules/
+vendor/
+.composer/
+
+# Environment & secrets
+.env
+.env.*
+*.env
+secrets/*.decoded.yaml
+
+# Logs
+*.log
+logs/
+
+# Docker
+.dockerignore
+
+# Helm
+*.tgz
+charts/*/charts/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temp
+*.tmp
+*.temp

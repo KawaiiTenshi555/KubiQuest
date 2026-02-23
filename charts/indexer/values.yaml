@@ -1,0 +1,87 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/kubiquest/indexer
+  tag: "latest"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: registry-secret
+
+nameOverride: ""
+fullnameOverride: ""
+
+environment: production
+
+# Indexer does not expose HTTP traffic
+service:
+  enabled: false
+
+# Environment variables (non-sensitive)
+env:
+  RABBITMQ_HOST: rabbitmq.databases.svc.cluster.local
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_VHOST: /
+  RABBITMQ_QUEUE: products-indexer
+  RABBITMQ_EXCHANGE: products
+  ELASTICSEARCH_HOST: elasticsearch.databases.svc.cluster.local
+  ELASTICSEARCH_PORT: "9200"
+  ELASTICSEARCH_SCHEME: http
+  ELASTICSEARCH_INDEX: products
+
+# Secrets injected via envFrom
+existingSecrets:
+  - rabbitmq-secret
+  - elasticsearch-secret
+
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 100m
+  limits:
+    memory: 256Mi
+    cpu: 300m
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 0  # indexation delay is acceptable
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000  # node user
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+
+# Liveness probe via HTTP if indexer exposes a health endpoint
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

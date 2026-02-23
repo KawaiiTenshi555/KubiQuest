@@ -1,0 +1,98 @@
+replicaCount: 2
+
+image:
+  repository: ghcr.io/kubiquest/api
+  tag: "latest"
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: registry-secret
+
+nameOverride: ""
+fullnameOverride: ""
+
+environment: production
+
+service:
+  type: ClusterIP
+  port: 80
+
+# Environment variables (non-sensitive)
+env:
+  APP_ENV: production
+  APP_DEBUG: "false"
+  LOG_CHANNEL: stderr
+  DB_CONNECTION: mysql
+  DB_HOST: mysql.databases.svc.cluster.local
+  DB_PORT: "3306"
+  QUEUE_CONNECTION: rabbitmq
+  RABBITMQ_HOST: rabbitmq.databases.svc.cluster.local
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_VHOST: /
+  RABBITMQ_EXCHANGE: products
+  ELASTICSEARCH_HOST: elasticsearch.databases.svc.cluster.local
+  ELASTICSEARCH_PORT: "9200"
+  ELASTICSEARCH_SCHEME: http
+
+# Secrets injected via envFrom
+existingSecrets:
+  - mysql-secret
+  - rabbitmq-secret
+  - elasticsearch-secret
+  - api-secret
+
+# Run migrations before starting
+initContainers:
+  migrations:
+    enabled: true
+
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 250m
+  limits:
+    memory: 512Mi
+    cpu: 500m
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 82  # www-data in alpine
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 20
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /api/health
+    port: http
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

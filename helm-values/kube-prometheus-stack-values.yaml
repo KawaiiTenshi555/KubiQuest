@@ -1,0 +1,77 @@
+# kube-prometheus-stack chart values
+# helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring -f helm-values/kube-prometheus-stack-values.yaml
+
+prometheus:
+  prometheusSpec:
+    retention: 15d
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 250m
+      limits:
+        memory: 1Gi
+        cpu: 1000m
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+    # Scrape all namespaces
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+      limits:
+        memory: 128Mi
+        cpu: 100m
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+grafana:
+  enabled: true
+  adminPassword: "grafana-admin-password"  # Change before deploying
+  persistence:
+    enabled: true
+    size: 5Gi
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 256Mi
+      cpu: 300m
+  # Add Loki as additional datasource
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki-stack.logging.svc.cluster.local:3100
+      access: proxy
+      isDefault: false
+  sidecar:
+    dashboards:
+      enabled: true
+      searchNamespace: ALL
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+commonLabels:
+  app.kubernetes.io/part-of: kubiquest
+  environment: production

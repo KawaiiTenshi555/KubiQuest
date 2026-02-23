@@ -1,0 +1,12 @@
+apiVersion: v2
+name: indexer
+description: KubiQuest Node.JS RabbitMQ->Elasticsearch indexer
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - kubiquest
+  - indexer
+  - nodejs
+maintainers:
+  - name: KubiQuest
