@@ -1,0 +1,39 @@
+<div class="add-product">
+  <h2>Add products</h2>
+
+  <form (ngSubmit)="onSubmit()" #form="ngForm">
+    <div class="field">
+      <label for="name">Name</label>
+      <input
+        id="name"
+        type="text"
+        [(ngModel)]="name"
+        name="name"
+        placeholder="Product name"
+        maxlength="255"
+        required
+        [disabled]="loading"
+      />
+    </div>
+
+    <div class="field">
+      <label for="image">Image URL</label>
+      <input
+        id="image"
+        type="url"
+        [(ngModel)]="image"
+        name="image"
+        placeholder="https://example.com/image.jpg"
+        maxlength="512"
+        required
+        [disabled]="loading"
+      />
+    </div>
+
+    <div *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</div>
+
+    <button type="submit" [disabled]="loading || !name.trim() || !image.trim()">
+      {{ loading ? 'Adding...' : 'Add Product' }}
+    </button>
+  </form>
+</div>

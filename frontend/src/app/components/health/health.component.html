@@ -1,0 +1,48 @@
+<div class="health-widget">
+  <h2>Health</h2>
+
+  <div *ngIf="error" class="health-error">
+    API unreachable
+  </div>
+
+  <div *ngIf="!error && health" class="health-grid">
+    <div class="health-row">
+      <span class="label">hostname</span>
+      <span class="value">{{ health.hostname }}</span>
+    </div>
+    <div class="health-row">
+      <span class="label">mysql</span>
+      <span class="badge" [class.healthy]="health.mysql === 'healthy'" [class.error]="health.mysql !== 'healthy'">
+        {{ health.mysql }}
+      </span>
+    </div>
+    <div class="health-row">
+      <span class="label">products</span>
+      <span class="value">{{ health.products }}</span>
+    </div>
+    <div class="health-row">
+      <span class="label">mysql_migrations</span>
+      <span class="badge" [class.healthy]="health.mysql_migrations === 'healthy'" [class.error]="health.mysql_migrations !== 'healthy'">
+        {{ health.mysql_migrations }}
+      </span>
+    </div>
+    <div class="health-row">
+      <span class="label">elasticsearch</span>
+      <span class="badge" [class.healthy]="health.elasticsearch === 'healthy'" [class.error]="health.elasticsearch !== 'healthy'">
+        {{ health.elasticsearch }}
+      </span>
+    </div>
+    <div class="health-row">
+      <span class="label">msgs</span>
+      <span class="value">{{ health.msgs }}</span>
+    </div>
+    <div class="health-row">
+      <span class="label">response_time_ms</span>
+      <span class="value">{{ health.response_time_ms }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="!error && !health" class="health-loading">
+    Loading...
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="product-list-container">
+
+  <app-add-product (productAdded)="onProductAdded($event)"></app-add-product>
+
+  <div class="search-section">
+    <h2>Products</h2>
+    <input
+      type="text"
+      class="search-input"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchChange()"
+      placeholder="Search products..."
+      aria-label="Search products"
+    />
+  </div>
+
+  <div *ngIf="loading" class="loading-state">Loading...</div>
+
+  <div *ngIf="!loading && products.length === 0" class="empty-state">
+    No products found.
+  </div>
+
+  <div *ngIf="!loading && products.length > 0" class="product-grid">
+    <app-product-card
+      *ngFor="let product of products; trackBy: trackById"
+      [product]="product"
+      (productDeleted)="onProductDeleted($event)"
+    ></app-product-card>
+  </div>
+
+</div>

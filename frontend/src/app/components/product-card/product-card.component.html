@@ -1,0 +1,19 @@
+<div class="card" [class.loading]="loading">
+  <img
+    [src]="product.image"
+    [alt]="product.name"
+    (error)="onImageError($event)"
+  />
+  <div class="card-footer">
+    <span class="product-name">{{ product.name }}</span>
+    <button
+      class="delete-btn"
+      (click)="onDelete()"
+      [disabled]="loading"
+      title="Delete product"
+      aria-label="Delete {{ product.name }}"
+    >
+      &times;
+    </button>
+  </div>
+</div>
