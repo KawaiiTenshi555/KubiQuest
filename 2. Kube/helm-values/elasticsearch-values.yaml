@@ -1,0 +1,56 @@
+# Bitnami Elasticsearch chart values
+# helm install elasticsearch bitnami/elasticsearch -n databases -f ./2.\ Kube/helm-values/elasticsearch-values.yaml
+
+clusterName: kubiquest-es
+
+security:
+  enabled: true
+  existingSecret: elasticsearch-secret
+  tls:
+    restEncryption: false
+
+master:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+    limits:
+      memory: 1Gi
+      cpu: 1000m
+  persistence:
+    size: 5Gi
+  heapSize: 256m
+
+data:
+  replicaCount: 2
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+    limits:
+      memory: 1Gi
+      cpu: 1000m
+  persistence:
+    size: 10Gi
+  heapSize: 512m
+
+coordinating:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+ingest:
+  enabled: false
+
+kibana:
+  enabled: false
+
+commonLabels:
+  app.kubernetes.io/part-of: kubiquest
+  environment: production

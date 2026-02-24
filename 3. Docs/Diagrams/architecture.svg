@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <style>
+    .box { fill: #0f172a; stroke: #22c55e; stroke-width: 2; rx: 12; }
+    .db { fill: #111827; stroke: #06b6d4; stroke-width: 2; rx: 12; }
+    .txt { fill: #e5e7eb; font-family: Segoe UI, Arial, sans-serif; font-size: 18px; text-anchor: middle; dominant-baseline: middle; }
+    .arrow { stroke: #94a3b8; stroke-width: 2; marker-end: url(#arr); }
+  </style>
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+    </marker>
+  </defs>
+
+  <rect x="470" y="40" width="260" height="60" class="box" />
+  <text x="600" y="70" class="txt">Ingress NGINX</text>
+
+  <rect x="470" y="150" width="260" height="60" class="box" />
+  <text x="600" y="180" class="txt">Frontend Angular</text>
+
+  <rect x="470" y="260" width="260" height="60" class="box" />
+  <text x="600" y="290" class="txt">API Laravel</text>
+
+  <rect x="170" y="390" width="230" height="60" class="db" />
+  <text x="285" y="420" class="txt">MySQL</text>
+
+  <rect x="485" y="390" width="230" height="60" class="db" />
+  <text x="600" y="420" class="txt">RabbitMQ</text>
+
+  <rect x="800" y="390" width="230" height="60" class="db" />
+  <text x="915" y="420" class="txt">Elasticsearch</text>
+
+  <rect x="485" y="510" width="230" height="60" class="box" />
+  <text x="600" y="540" class="txt">Indexer Node.js</text>
+
+  <rect x="170" y="510" width="230" height="60" class="box" />
+  <text x="285" y="540" class="txt">Reporting CronJob</text>
+
+  <line x1="600" y1="100" x2="600" y2="150" class="arrow" />
+  <line x1="600" y1="210" x2="600" y2="260" class="arrow" />
+
+  <line x1="540" y1="320" x2="330" y2="390" class="arrow" />
+  <line x1="600" y1="320" x2="600" y2="390" class="arrow" />
+  <line x1="660" y1="320" x2="870" y2="390" class="arrow" />
+
+  <line x1="600" y1="450" x2="600" y2="510" class="arrow" />
+  <line x1="715" y1="540" x2="800" y2="420" class="arrow" />
+
+  <line x1="285" y1="510" x2="285" y2="450" class="arrow" />
+</svg>

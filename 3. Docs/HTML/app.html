@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KubiQuest Docs - Chapter 01 App</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <h1>Chapter 01 - Application Layer</h1>
+    <p>How the software stack works from frontend to reporting.</p>
+  </header>
+
+  <main>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./app.html">Chapter 01 - App</a>
+      <a href="./kube.html">Chapter 02 - Kube</a>
+      <a href="./runbook.html">Chapter 03 - Runbook</a>
+    </nav>
+
+    <section>
+      <h2>1. Services</h2>
+      <ul>
+        <li><b>Frontend</b> (`1. App/frontend`): Angular UI for CRUD + search + health widget.</li>
+        <li><b>API</b> (`1. App/api`): Laravel REST endpoints and integrations (MySQL, RabbitMQ, Elasticsearch).</li>
+        <li><b>Indexer</b> (`1. App/indexer`): RabbitMQ consumer that syncs Elasticsearch.</li>
+        <li><b>Reporting</b> (`1. App/reporting`): Go CronJob sending daily Teams report.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>2. API Endpoints</h2>
+      <pre><code>GET    /api/health
+GET    /api/metrics
+GET    /api/products
+POST   /api/products
+DELETE /api/products/{id}
+GET    /api/search?q=...</code></pre>
+    </section>
+
+    <section>
+      <h2>3. Event Pipeline</h2>
+      <ol>
+        <li>API writes product in MySQL.</li>
+        <li>API publishes event to RabbitMQ exchange `products`.</li>
+        <li>Indexer consumes queue `products-indexer`.</li>
+        <li>Indexer upserts/deletes document in Elasticsearch.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>4. Notable Refactors Applied</h2>
+      <ul>
+        <li>Indexer now uses `ELASTICSEARCH_SCHEME` explicitly (`http`/`https`).</li>
+        <li>RabbitMQ vhost URL encoding is now explicit and safer.</li>
+        <li>Scripts and runtime logs were cleaned for stability/readability.</li>
+        <li>Reporting service was split into clearer functions.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>5. Local Infra Startup</h2>
+      <pre><code>docker compose -f "1. App/docker-compose.dev.yml" up -d</code></pre>
+    </section>
+  </main>
+
+  <div class="footer">KubiQuest - Chapter 01</div>
+</body>
+</html>

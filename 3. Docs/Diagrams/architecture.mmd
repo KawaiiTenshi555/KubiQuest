@@ -1,0 +1,21 @@
+flowchart LR
+  Browser[Browser] --> Ingress[Ingress NGINX]
+  Ingress --> Frontend[Frontend Angular]
+  Frontend --> API[API Laravel]
+
+  API --> MySQL[(MySQL)]
+  API --> RabbitMQ[(RabbitMQ)]
+  API --> ES[(Elasticsearch)]
+
+  RabbitMQ --> Indexer[Indexer Node.js]
+  Indexer --> ES
+
+  Reporting[Reporting CronJob Go] --> MySQL
+  Reporting --> Teams[MS Teams Webhook]
+
+  Prometheus[Prometheus] --> API
+  Prometheus --> Indexer
+  Grafana[Grafana] --> Prometheus
+
+  Loki[Loki + Promtail] --> API
+  Loki --> Indexer

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KubiQuest Docs - Chapter 03 Runbook</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <h1>Chapter 03 - Runbook A to Z</h1>
+    <p>Operational procedure from build to rollback.</p>
+  </header>
+
+  <main>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./app.html">Chapter 01 - App</a>
+      <a href="./kube.html">Chapter 02 - Kube</a>
+      <a href="./runbook.html">Chapter 03 - Runbook</a>
+    </nav>
+
+    <section>
+      <h2>A. Build and Push</h2>
+      <pre><code>export GITHUB_USER=&lt;user&gt;
+export IMAGE_TAG=latest
+export GHCR_TOKEN=&lt;token&gt;
+
+./2.\ Kube/scripts/build-and-push.sh</code></pre>
+    </section>
+
+    <section>
+      <h2>B. Deploy</h2>
+      <pre><code>./2.\ Kube/scripts/deploy-all.sh</code></pre>
+    </section>
+
+    <section>
+      <h2>C. Validate</h2>
+      <pre><code>kubectl get pods -A
+kubectl get hpa -n app
+curl http://&lt;EXTERNAL_IP&gt;/api/health</code></pre>
+    </section>
+
+    <section>
+      <h2>D. Demonstrate</h2>
+      <pre><code>./2.\ Kube/scripts/load-test.sh http://&lt;EXTERNAL_IP&gt; 120
+./2.\ Kube/scripts/zero-downtime-demo.sh http://&lt;EXTERNAL_IP&gt; v2.0.0
+./2.\ Kube/scripts/rollback-demo.sh http://&lt;EXTERNAL_IP&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>E. Rollback</h2>
+      <pre><code>helm history api -n app
+helm rollback api -n app
+kubectl rollout undo deployment/api-deployment -n app</code></pre>
+    </section>
+
+    <section>
+      <h2>F. Cleanup</h2>
+      <pre><code>helm uninstall frontend api indexer reporting -n app
+helm uninstall mysql rabbitmq elasticsearch -n databases</code></pre>
+    </section>
+  </main>
+
+  <div class="footer">KubiQuest - Chapter 03</div>
+</body>
+</html>

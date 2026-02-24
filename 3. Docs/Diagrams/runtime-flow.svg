@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <style>
+    .lane { fill: #111827; stroke: #334155; stroke-width: 1.5; rx: 8; }
+    .event { fill: #0b1220; stroke: #22c55e; stroke-width: 2; rx: 8; }
+    .txt { fill: #e5e7eb; font-family: Segoe UI, Arial, sans-serif; font-size: 14px; text-anchor: middle; dominant-baseline: middle; }
+    .title { fill: #22c55e; font-size: 18px; }
+    .arrow { stroke: #94a3b8; stroke-width: 2; marker-end: url(#arr); }
+  </style>
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+    </marker>
+  </defs>
+
+  <text x="600" y="35" class="txt title">KubiQuest Runtime Flow</text>
+
+  <rect x="40" y="70" width="220" height="560" class="lane" />
+  <text x="150" y="95" class="txt">User / Frontend</text>
+
+  <rect x="280" y="70" width="220" height="560" class="lane" />
+  <text x="390" y="95" class="txt">API</text>
+
+  <rect x="520" y="70" width="220" height="560" class="lane" />
+  <text x="630" y="95" class="txt">MySQL / RabbitMQ</text>
+
+  <rect x="760" y="70" width="220" height="560" class="lane" />
+  <text x="870" y="95" class="txt">Indexer</text>
+
+  <rect x="1000" y="70" width="160" height="560" class="lane" />
+  <text x="1080" y="95" class="txt">Elasticsearch</text>
+
+  <rect x="70" y="150" width="160" height="48" class="event" /><text x="150" y="174" class="txt">POST product</text>
+  <rect x="310" y="230" width="160" height="48" class="event" /><text x="390" y="254" class="txt">Write product</text>
+  <rect x="550" y="310" width="160" height="48" class="event" /><text x="630" y="334" class="txt">Publish event</text>
+  <rect x="790" y="390" width="160" height="48" class="event" /><text x="870" y="414" class="txt">Consume event</text>
+  <rect x="1010" y="470" width="140" height="48" class="event" /><text x="1080" y="494" class="txt">Index doc</text>
+
+  <line x1="230" y1="174" x2="310" y2="254" class="arrow" />
+  <line x1="470" y1="254" x2="550" y2="334" class="arrow" />
+  <line x1="710" y1="334" x2="790" y2="414" class="arrow" />
+  <line x1="950" y1="414" x2="1010" y2="494" class="arrow" />
+
+  <rect x="70" y="560" width="160" height="48" class="event" /><text x="150" y="584" class="txt">GET search</text>
+  <rect x="310" y="560" width="160" height="48" class="event" /><text x="390" y="584" class="txt">Proxy query</text>
+  <rect x="1010" y="560" width="140" height="48" class="event" /><text x="1080" y="584" class="txt">Search hits</text>
+
+  <line x1="230" y1="584" x2="310" y2="584" class="arrow" />
+  <line x1="470" y1="584" x2="1010" y2="584" class="arrow" />
+</svg>

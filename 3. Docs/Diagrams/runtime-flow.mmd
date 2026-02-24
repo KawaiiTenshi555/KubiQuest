@@ -1,0 +1,23 @@
+sequenceDiagram
+  participant U as User
+  participant F as Frontend
+  participant A as API
+  participant DB as MySQL
+  participant MQ as RabbitMQ
+  participant I as Indexer
+  participant ES as Elasticsearch
+
+  U->>F: Create product
+  F->>A: POST /api/products
+  A->>DB: Insert product
+  A->>MQ: Publish event (created)
+  A-->>F: 201 Created
+
+  MQ->>I: Consume message
+  I->>ES: Index document
+
+  U->>F: Search product
+  F->>A: GET /api/search?q=...
+  A->>ES: Search query
+  ES-->>A: Hits
+  A-->>F: Search results

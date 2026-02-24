@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KubiQuest Docs - Chapter 02 Kube</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <h1>Chapter 02 - Kubernetes Layer</h1>
+    <p>Deployment model, manifests, Helm charts, and platform controls.</p>
+  </header>
+
+  <main>
+    <nav>
+      <a href="./index.html">Home</a>
+      <a href="./app.html">Chapter 01 - App</a>
+      <a href="./kube.html">Chapter 02 - Kube</a>
+      <a href="./runbook.html">Chapter 03 - Runbook</a>
+    </nav>
+
+    <section>
+      <h2>1. Core Directories (`2. Kube`)</h2>
+      <ul>
+        <li>`k8s/` - namespaces, quotas, RBAC, secrets, ingress</li>
+        <li>`charts/` - custom charts for app services</li>
+        <li>`helm-values/` - values for public charts</li>
+        <li>`scripts/` - automation scripts (build/deploy/demo)</li>
+        <li>`bonus/` - optional extras (cert-manager, kustomize, istio, cadvisor, CI)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>2. Cluster Topology</h2>
+      <ul>
+        <li>Namespace `app`: frontend, api, indexer, reporting</li>
+        <li>Namespace `databases`: mysql, rabbitmq, elasticsearch</li>
+        <li>Namespace `monitoring`: prometheus + grafana</li>
+        <li>Namespace `logging`: loki + promtail</li>
+        <li>Namespace `ingress-nginx`: ingress controller</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Controls and Reliability</h2>
+      <ul>
+        <li>Requests/limits on workloads</li>
+        <li>HPA and PDB on main services</li>
+        <li>Readiness and liveness probes</li>
+        <li>RBAC split between `sysadmin` and `developer`</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. Full Deployment Script</h2>
+      <pre><code>./2.\ Kube/scripts/deploy-all.sh</code></pre>
+      <p>The script resolves all paths relatively and works with `1. App` / `2. Kube` naming.</p>
+    </section>
+  </main>
+
+  <div class="footer">KubiQuest - Chapter 02</div>
+</body>
+</html>

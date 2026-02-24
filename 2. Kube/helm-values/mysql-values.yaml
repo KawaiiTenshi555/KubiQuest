@@ -1,0 +1,63 @@
+# Bitnami MySQL chart values
+# helm install mysql bitnami/mysql -n databases -f ./2.\ Kube/helm-values/mysql-values.yaml
+
+auth:
+  existingSecret: mysql-secret
+  # Keys in the secret:
+  #   mysql-root-password
+  #   mysql-password
+  #   mysql-user
+  #   mysql-database
+
+primary:
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+  configuration: |-
+    [mysqld]
+    default_authentication_plugin=mysql_native_password
+    skip-name-resolve
+    explicit_defaults_for_timestamp
+    basedir=/opt/bitnami/mysql
+    plugin_dir=/opt/bitnami/mysql/lib/plugin
+    port=3306
+    socket=/opt/bitnami/mysql/tmp/mysql.sock
+    datadir=/bitnami/mysql/data
+    tmpdir=/opt/bitnami/mysql/tmp
+    max_allowed_packet=16M
+    bind-address=*
+    pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
+    log-error=/opt/bitnami/mysql/logs/mysqld.log
+    character-set-server=UTF8
+    collation-server=utf8_general_ci
+    innodb_buffer_pool_size=256M
+    max_connections=150
+    slow_query_log=1
+    long_query_time=2
+
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+commonLabels:
+  app.kubernetes.io/part-of: kubiquest
+  environment: production
