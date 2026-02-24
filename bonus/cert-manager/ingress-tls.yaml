@@ -1,0 +1,48 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Ingress with TLS — Let's Encrypt (production issuer)
+#
+# Remplace k8s/ingress/ingress.yaml une fois le certificat provisionné.
+# cert-manager détecte l'annotation et génère automatiquement le certificat.
+#
+# Déploiement :
+#   kubectl apply -f bonus/cert-manager/ingress-tls.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubiquest-ingress-tls
+  namespace: app
+  annotations:
+    # cert-manager provisionne automatiquement le certificat Let's Encrypt
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # Rediriger HTTP → HTTPS
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+  labels:
+    app.kubernetes.io/part-of: kubiquest
+    app.kubernetes.io/managed-by: kubectl
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - kubiquest.example.com   # <-- Remplacer par ton domaine réel
+      secretName: kubiquest-tls  # cert-manager créera ce secret automatiquement
+  rules:
+    - host: kubiquest.example.com   # <-- Remplacer par ton domaine réel
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api-service
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80

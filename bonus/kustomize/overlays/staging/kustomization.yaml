@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# ── Namespace staging (override la base "app") ─────────────────────────────
+namespace: staging
+
+resources:
+  - ../../base
+
+# ── Labels ajoutés sur toutes les ressources ───────────────────────────────
+commonLabels:
+  environment: staging
+
+# ── Override des tags d'images → branch "staging" ──────────────────────────
+images:
+  - name: ghcr.io/kubiquest/frontend
+    newTag: staging
+  - name: ghcr.io/kubiquest/api
+    newTag: staging
+  - name: ghcr.io/kubiquest/indexer
+    newTag: staging
+  - name: ghcr.io/kubiquest/reporting
+    newTag: staging
+
+# ── Patches JSON6902 : replicas, resources ─────────────────────────────────
+patches:
+  - path: replica-patch.yaml
+  - path: resource-patch.yaml

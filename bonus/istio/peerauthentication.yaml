@@ -1,0 +1,23 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Istio — mTLS strict pour le namespace app
+#
+# Prérequis (à exécuter UNE FOIS) :
+#   istioctl install --set profile=default -y
+#   kubectl label namespace app istio-injection=enabled
+#   # Redémarrer les pods pour injecter les sidecars :
+#   kubectl rollout restart deployment -n app
+#
+# Déploiement :
+#   kubectl apply -f bonus/istio/ -n app
+# ─────────────────────────────────────────────────────────────────────────────
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default-mtls
+  namespace: app
+  labels:
+    app.kubernetes.io/part-of: kubiquest
+spec:
+  # mTLS STRICT : tout le trafic inter-services doit être chiffré
+  mtls:
+    mode: STRICT

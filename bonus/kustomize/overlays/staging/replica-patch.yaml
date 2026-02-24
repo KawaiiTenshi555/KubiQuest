@@ -1,0 +1,27 @@
+# Réduit les replicas à 1 pour l'environnement staging (économie de ressources)
+- op: replace
+  path: /spec/replicas
+  value: 1
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: frontend
+
+- op: replace
+  path: /spec/replicas
+  value: 1
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: api
+
+- op: replace
+  path: /spec/replicas
+  value: 1
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: indexer

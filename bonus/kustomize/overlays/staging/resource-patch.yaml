@@ -1,0 +1,48 @@
+# Réduit les resource limits pour staging (cluster plus petit)
+# API : limits 512Mi → 256Mi, cpu 500m → 250m
+- op: replace
+  path: /spec/template/spec/containers/0/resources
+  value:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 256Mi
+      cpu: 250m
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: api
+
+# Frontend : limits 128Mi → 64Mi
+- op: replace
+  path: /spec/template/spec/containers/0/resources
+  value:
+    requests:
+      memory: 32Mi
+      cpu: 25m
+    limits:
+      memory: 64Mi
+      cpu: 100m
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: frontend
+
+# Indexer : limits 256Mi → 128Mi
+- op: replace
+  path: /spec/template/spec/containers/0/resources
+  value:
+    requests:
+      memory: 64Mi
+      cpu: 50m
+    limits:
+      memory: 128Mi
+      cpu: 150m
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: indexer

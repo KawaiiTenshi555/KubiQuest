@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app.kubernetes.io/name: api
+    app.kubernetes.io/part-of: kubiquest
+    environment: production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: api
+        app.kubernetes.io/part-of: kubiquest
+        environment: production
+    spec:
+      imagePullSecrets:
+        - name: registry-secret
+      initContainers:
+        - name: migrations
+          image: ghcr.io/kubiquest/api:latest
+          command: ["php", "artisan", "migrate", "--force"]
+          envFrom:
+            - secretRef:
+                name: mysql-secret
+            - secretRef:
+                name: api-secret
+          env:
+            - name: DB_CONNECTION
+              value: mysql
+            - name: DB_HOST
+              value: mysql.databases.svc.cluster.local
+            - name: DB_PORT
+              value: "3306"
+      containers:
+        - name: api
+          image: ghcr.io/kubiquest/api:latest
+          ports:
+            - containerPort: 80
+              name: http
+          envFrom:
+            - secretRef:
+                name: mysql-secret
+            - secretRef:
+                name: rabbitmq-secret
+            - secretRef:
+                name: elasticsearch-secret
+            - secretRef:
+                name: api-secret
+          env:
+            - name: APP_ENV
+              value: production
+            - name: APP_DEBUG
+              value: "false"
+            - name: LOG_CHANNEL
+              value: stderr
+            - name: DB_CONNECTION
+              value: mysql
+            - name: DB_HOST
+              value: mysql.databases.svc.cluster.local
+            - name: DB_PORT
+              value: "3306"
+            - name: RABBITMQ_HOST
+              value: rabbitmq.databases.svc.cluster.local
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: ELASTICSEARCH_HOST
+              value: elasticsearch.databases.svc.cluster.local
+            - name: ELASTICSEARCH_PORT
+              value: "9200"
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 80
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+            limits:
+              memory: 512Mi
+              cpu: 500m

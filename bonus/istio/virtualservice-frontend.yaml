@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: frontend
+  namespace: app
+  labels:
+    app.kubernetes.io/part-of: kubiquest
+spec:
+  hosts:
+    - "kubiquest.example.com"   # <-- Remplacer par ton domaine
+  gateways:
+    - kubiquest-gateway
+  http:
+    # /api/* → service API
+    - match:
+        - uri:
+            prefix: /api
+      route:
+        - destination:
+            host: api-service
+            port:
+              number: 80
+    # /* → service Frontend (SPA fallback)
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: frontend-service
+            port:
+              number: 80
