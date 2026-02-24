@@ -1,13 +1,16 @@
 'use strict';
 
-const http     = require('http');
-const es       = require('./elasticsearch');
-const consumer = require('./consumer');
+const http                     = require('http');
+const { client, esUp, rmqUp } = require('./metrics');
+const es                       = require('./elasticsearch');
+const consumer                 = require('./consumer');
 
 const PORT = 3000;
 
 /**
- * Minimal HTTP server exposing /health for Kubernetes readiness/liveness probes.
+ * HTTP server exposing:
+ *   GET /health  — Kubernetes readiness / liveness probe (JSON)
+ *   GET /metrics — Prometheus scrape endpoint (text/plain)
  */
 function startHealthServer() {
   const server = http.createServer(async (req, res) => {
@@ -22,6 +25,9 @@ function startHealthServer() {
       const rmqOk = consumer.getStatus();
       const ok    = esOk && rmqOk;
 
+      esUp.set(esOk  ? 1 : 0);
+      rmqUp.set(rmqOk ? 1 : 0);
+
       const body = JSON.stringify({
         status:        ok ? 'ok' : 'degraded',
         elasticsearch: esOk  ? 'healthy' : 'error',
@@ -33,12 +39,24 @@ function startHealthServer() {
       return;
     }
 
+    if (req.url === '/metrics') {
+      try {
+        const metrics = await client.register.metrics();
+        res.writeHead(200, { 'Content-Type': client.register.contentType });
+        res.end(metrics);
+      } catch (err) {
+        res.writeHead(500);
+        res.end(err.message);
+      }
+      return;
+    }
+
     res.writeHead(404);
     res.end();
   });
 
   server.listen(PORT, () => {
-    console.log(`[Health] HTTP server listening on port ${PORT}`);
+    console.log(`[Health] HTTP server listening on port ${PORT} (/health, /metrics)`);
   });
 }
 

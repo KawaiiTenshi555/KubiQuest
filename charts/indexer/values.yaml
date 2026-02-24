@@ -13,9 +13,11 @@ fullnameOverride: ""
 
 environment: production
 
-# Indexer does not expose HTTP traffic
+# Internal service for health probes and Prometheus scraping
 service:
-  enabled: false
+  enabled: true
+  type: ClusterIP
+  port: 3000
 
 # Environment variables (non-sensitive)
 env:
@@ -85,3 +87,9 @@ readinessProbe:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# Prometheus ServiceMonitor
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  scrapeTimeout: 10s

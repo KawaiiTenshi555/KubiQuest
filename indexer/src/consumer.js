@@ -1,7 +1,8 @@
 'use strict';
 
-const amqp = require('amqplib');
-const es   = require('./elasticsearch');
+const amqp                                 = require('amqplib');
+const es                                   = require('./elasticsearch');
+const { messagesProcessed, messagesFailed } = require('./metrics');
 
 const RABBITMQ_URL = `amqp://${process.env.RABBITMQ_USER || 'guest'}:${process.env.RABBITMQ_PASSWORD || 'guest'}@${process.env.RABBITMQ_HOST || '127.0.0.1'}:${process.env.RABBITMQ_PORT || 5672}${process.env.RABBITMQ_VHOST || '/'}`;
 const EXCHANGE     = process.env.RABBITMQ_EXCHANGE || 'products';
@@ -77,9 +78,11 @@ async function connect() {
         console.warn(`[RMQ] Unknown action: "${action}" — discarding message`);
       }
 
+      messagesProcessed.inc({ action: action || 'unknown' });
       channel.ack(msg);
     } catch (err) {
       console.error(`[RMQ] Failed to process message: ${err.message}`);
+      messagesFailed.inc();
       // Discard malformed/unprocessable messages (no requeue)
       channel.nack(msg, false, false);
     }

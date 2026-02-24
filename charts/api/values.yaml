@@ -96,3 +96,9 @@ readinessProbe:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# Prometheus ServiceMonitor
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  scrapeTimeout: 10s
